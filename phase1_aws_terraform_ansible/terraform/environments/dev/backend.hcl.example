@@ -1,0 +1,8 @@
+# Copy to backend.hcl and replace the bucket with the output of terraform/bootstrap.
+# backend.hcl is git-ignored.
+
+bucket       = "REPLACE_WITH_state_bucket_name_OUTPUT"
+key          = "iotbtech/phase1/dev/terraform.tfstate"
+region       = "us-west-1"
+encrypt      = true
+use_lockfile = true # S3 state locking, no DynamoDB table needed (Terraform 1.10+)

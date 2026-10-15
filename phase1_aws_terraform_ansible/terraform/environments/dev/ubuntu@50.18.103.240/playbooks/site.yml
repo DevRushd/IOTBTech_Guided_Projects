@@ -1,0 +1,7 @@
+---
+- name: Configure all nodes (update server, install and start Docker)
+  hosts: nodes
+  become: true
+  roles:
+    - common
+    - docker

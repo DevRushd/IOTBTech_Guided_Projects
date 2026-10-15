@@ -1,0 +1,31 @@
+---
+- name: Verify that every node is reachable and Docker works
+  hosts: nodes
+  become: true
+  tasks:
+    - name: Check connectivity
+      ansible.builtin.ping:
+
+    - name: Read Docker version
+      ansible.builtin.command: docker --version
+      register: docker_version
+      changed_when: false
+
+    - name: Collect service facts
+      ansible.builtin.service_facts:
+
+    - name: Confirm the Docker service is running
+      ansible.builtin.assert:
+        that:
+          - ansible_facts.services['docker.service'].state == 'running'
+        fail_msg: Docker service is not running
+        success_msg: Docker service is running
+
+    - name: Run the hello-world container
+      ansible.builtin.command: docker run --rm hello-world
+      register: hello_world
+      changed_when: false
+
+    - name: Show result
+      ansible.builtin.debug:
+        msg: "{{ inventory_hostname }}: {{ docker_version.stdout }} | hello-world {{ 'OK' if 'Hello from Docker!' in hello_world.stdout else 'FAILED' }}"
